@@ -15,7 +15,7 @@ import type {
   SystemConfigResponse,
   SystemMachineProvider,
 } from "@bb/server-contract";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { defaultExperiments, type Host } from "@bb/domain";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { sdk } from "@/lib/sdk";
@@ -24,6 +24,7 @@ import { createQueryClientTestHarness } from "@/test/queryClientTestHarness";
 import { makeSystemConfig } from "@/test/fixtures/system-config";
 import { MachinesSettingsSection } from "./MachinesSettingsSection";
 import { focusWithKeyboard } from "@/test/keyboard-focus";
+import { LocationProbe } from "@/test/location-probe";
 
 vi.mock("@/lib/sdk", () => ({
   sdk: {
@@ -135,11 +136,6 @@ function stubSidebarBootstrapFetch(): void {
       ),
     ),
   );
-}
-
-function LocationProbe() {
-  const location = useLocation();
-  return <div data-testid="location">{location.pathname}</div>;
 }
 
 function renderSectionWithClient() {

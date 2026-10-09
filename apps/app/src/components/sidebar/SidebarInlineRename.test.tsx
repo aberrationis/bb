@@ -11,6 +11,7 @@ import {
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BbHttpError } from "@bb/sdk/browser";
 import { useSidebarRename } from "./SidebarInlineRename";
+import { createDeferredPromise } from "@bb/test-helpers";
 
 afterEach(cleanup);
 
@@ -39,16 +40,6 @@ function RenameRow({
       {rename.isEditing ? rename.editor : <span>{name}</span>}
     </div>
   );
-}
-
-function deferred() {
-  let resolve!: () => void;
-  let reject!: (error: Error) => void;
-  const promise = new Promise<void>((done, fail) => {
-    resolve = done;
-    reject = fail;
-  });
-  return { promise, resolve, reject };
 }
 
 async function start(value = "New name") {
@@ -81,7 +72,7 @@ describe("sidebar inline rename", () => {
   });
 
   it("saves a trimmed value once while Enter and blur overlap, and cannot cancel an in-flight save", async () => {
-    const pending = deferred();
+    const pending = createDeferredPromise<void>();
     const onSave = vi.fn().mockReturnValue(pending.promise);
     render(<RenameRow onSave={onSave} />);
     const input = await start("  New name  ");
@@ -168,7 +159,7 @@ describe("sidebar inline rename", () => {
   });
 
   it("saves on departure without stealing focus after the response", async () => {
-    const pending = deferred();
+    const pending = createDeferredPromise<void>();
     const onSave = vi.fn().mockReturnValue(pending.promise);
     render(
       <>
